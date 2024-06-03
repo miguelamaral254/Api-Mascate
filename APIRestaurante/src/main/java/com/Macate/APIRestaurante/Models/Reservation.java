@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import org.hibernate.query.sql.internal.ParameterRecognizerImpl;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "reservation")
@@ -25,19 +26,41 @@ public class Reservation {
     @JoinColumn(name = "clientCPF")
     private Client cpf;
 
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     private String phoneNumber;
 
     @NotNull
     private LocalDate reservationDate;
 
+    private LocalTime time;
+
+    public LocalTime getTime() {
+        return time;
+    }
+
+    public void setTime(LocalTime time) {
+        this.time = time;
+    }
+
     private boolean finalized;
 
-    public Reservation(Tablee tableId, Employee employeeId, Client cpf, String phoneNumber, LocalDate reservationDate, boolean finalized) {
+    public Reservation(Tablee tableId, Employee employeeId, Client cpf, String name,String phoneNumber, LocalDate reservationDate, LocalTime time,boolean finalized) {
         this.tableId = tableId;
         this.employeeId = employeeId;
         this.cpf = cpf;
+        this.name = name;
         this.phoneNumber = phoneNumber;
         this.reservationDate = reservationDate;
+        this.time = time;
         this.finalized = finalized;
     }
 

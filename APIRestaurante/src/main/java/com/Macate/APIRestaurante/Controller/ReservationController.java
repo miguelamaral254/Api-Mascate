@@ -47,8 +47,10 @@ public class ReservationController {
         reservation.setTableId(table);
         reservation.setEmployeeId(employee);
         reservation.setCpf(client);
+        reservation.setName(reservationDTO.name());
         reservation.setPhoneNumber(reservationDTO.phoneNumber());
         reservation.setReservationDate(reservationDTO.reservationDate());
+        reservation.setTime(reservationDTO.time());
 
         if (table.getAvailability()) {
 

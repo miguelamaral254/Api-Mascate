@@ -16,7 +16,7 @@ public class Client {
     private int clientId;
 
     @NotBlank(message = "Name is required.")
-    @Size(max = 100, message = "Name length can't be more than 100.")
+    @Size(max = 200, message = "Name length can't be more than 200.")
     private String name;
 
     @NotBlank(message = "CPF is required.")
