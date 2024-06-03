@@ -40,6 +40,14 @@ public class Tablee {
     public Tablee(){
     }
 
+    public int getTableID() {
+        return tableID;
+    }
+
+    public void setTableID(int tableID) {
+        this.tableID = tableID;
+    }
+
     public Boolean getAvailability() {
         return availability;
     }

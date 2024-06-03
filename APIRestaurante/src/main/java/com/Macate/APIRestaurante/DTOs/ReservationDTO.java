@@ -6,5 +6,5 @@ import com.Macate.APIRestaurante.Models.Tablee;
 
 import java.time.LocalDate;
 
-public record ReservationDTO(Tablee tableId, Employee employeeId, Client cpf, Client phoneNumber, LocalDate reservationDate) {
+public record ReservationDTO(int tableId, int employeeId, String cpf, String phoneNumber, LocalDate reservationDate) {
 }

@@ -13,28 +13,26 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int idReservation;
 
-    @OneToOne
-    @JoinColumn(name = "tableID", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "tableID")
     private Tablee tableId;
 
-    @OneToOne
-    @JoinColumn(name = "employeeID", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "employeeID")
     private Employee employeeId;
 
-    @OneToOne
-    @JoinColumn(name = "clientCPF", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "clientCPF")
     private Client cpf;
 
-    @OneToOne
-    @JoinColumn(name = "clientPhoneNumber", nullable = false)
-    private Client phoneNumber;
+    private String phoneNumber;
 
     @NotNull
     private LocalDate reservationDate;
 
     private boolean finalized;
 
-    public Reservation(Tablee tableId, Employee employeeId, Client cpf, Client phoneNumber, LocalDate reservationDate, boolean finalized) {
+    public Reservation(Tablee tableId, Employee employeeId, Client cpf, String phoneNumber, LocalDate reservationDate, boolean finalized) {
         this.tableId = tableId;
         this.employeeId = employeeId;
         this.cpf = cpf;
@@ -78,11 +76,11 @@ public class Reservation {
         this.cpf = cpf;
     }
 
-    public Client getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(Client phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
