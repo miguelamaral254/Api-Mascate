@@ -28,14 +28,6 @@ public class Reservation {
 
     private String name;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     private String phoneNumber;
 
     @NotNull
@@ -43,17 +35,11 @@ public class Reservation {
 
     private LocalTime time;
 
-    public LocalTime getTime() {
-        return time;
-    }
+    private boolean Checkin;
 
-    public void setTime(LocalTime time) {
-        this.time = time;
-    }
 
-    private boolean finalized;
 
-    public Reservation(Tablee tableId, Employee employeeId, Client cpf, String name,String phoneNumber, LocalDate reservationDate, LocalTime time,boolean finalized) {
+    public Reservation(Tablee tableId, Employee employeeId, Client cpf, String name, String phoneNumber, LocalDate reservationDate, LocalTime time, boolean Checkin) {
         this.tableId = tableId;
         this.employeeId = employeeId;
         this.cpf = cpf;
@@ -61,8 +47,16 @@ public class Reservation {
         this.phoneNumber = phoneNumber;
         this.reservationDate = reservationDate;
         this.time = time;
-        this.finalized = finalized;
+        this.Checkin = Checkin;
     }
+    public void setTime(LocalTime time) {
+        this.time = time;
+    }
+
+    public LocalTime getTime() {
+        return time;
+    }
+
 
     public Reservation() {
     }
@@ -77,6 +71,10 @@ public class Reservation {
 
     public Tablee getTableId() {
         return tableId;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setTableId(Tablee tableId) {
@@ -115,11 +113,15 @@ public class Reservation {
         this.reservationDate = reservationDate;
     }
 
-    public boolean isFinalized() {
-        return finalized;
+    public boolean isCheckin() {
+        return Checkin;
     }
 
-    public void setFinalized(boolean finalized) {
-        this.finalized = finalized;
+    public void setCheckin(boolean checkin) {
+        Checkin = checkin;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
