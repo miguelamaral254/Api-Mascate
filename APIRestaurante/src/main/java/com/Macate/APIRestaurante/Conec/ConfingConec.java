@@ -14,5 +14,4 @@ public class ConfingConec implements WebMvcConfigurer {
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*");
     }
-
 }

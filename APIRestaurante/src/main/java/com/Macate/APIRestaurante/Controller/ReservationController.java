@@ -37,7 +37,7 @@ public class ReservationController {
     @PostMapping("/reservar")
     public ResponseEntity<String> createReservation(@RequestBody ReservationDTO reservationDTO){
 
-        Tablee table = tableRepository.findById(reservationDTO.tableId())
+        Tablee table = tableRepository.findById(reservationDTO.table())
                 .orElseThrow(() -> new RuntimeException("Table not found"));
         Employee employee = employeeRepository.findById(reservationDTO.employeeId())
                 .orElseThrow(() -> new RuntimeException("Employee not found"));
@@ -48,16 +48,16 @@ public class ReservationController {
         reservation.setTableId(table);
         reservation.setEmployeeId(employee);
         reservation.setCpf(client);
-        reservation.setName(reservationDTO.name());
+        reservation.setName(reservationDTO.customerName());
         reservation.setPhoneNumber(reservationDTO.phoneNumber());
-        reservation.setReservationDate(reservationDTO.reservationDate());
+        reservation.setReservationDate(reservationDTO.date());
         reservation.setTime(reservationDTO.time());
 
         if (table.getAvailability()) {
 
             reservationRepository.save(reservation);
 
-            Tablee table2 = tableRepository.findById(reservationDTO.tableId())
+            Tablee table2 = tableRepository.findById(reservationDTO.table())
                     .orElseThrow(() -> new RuntimeException("Table not found"));
             table2.setAvailability(false);
             tableRepository.save(table2);
