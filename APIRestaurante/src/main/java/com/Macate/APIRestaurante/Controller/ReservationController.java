@@ -1,14 +1,11 @@
 package com.Macate.APIRestaurante.Controller;
 
 import com.Macate.APIRestaurante.DTOs.CheckinReservationDTO;
+import com.Macate.APIRestaurante.DTOs.CheckoutDTO;
 import com.Macate.APIRestaurante.DTOs.DeletReservationDTO;
 import com.Macate.APIRestaurante.DTOs.ReservationDTO;
-import com.Macate.APIRestaurante.Models.Client;
-import com.Macate.APIRestaurante.Models.Employee;
 import com.Macate.APIRestaurante.Models.Reservation;
 import com.Macate.APIRestaurante.Models.Tablee;
-import com.Macate.APIRestaurante.repository.ClientRepository;
-import com.Macate.APIRestaurante.repository.EmployeeRepository;
 import com.Macate.APIRestaurante.repository.ReservationRepository;
 import com.Macate.APIRestaurante.repository.TableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,57 +25,99 @@ public class ReservationController {
     @Autowired
     private TableRepository tableRepository;
 
-
     @PostMapping("/reservar")
     public ResponseEntity<String> createReservation(@RequestBody ReservationDTO reservationDTO){
-
-        Tablee table = tableRepository.findById(reservationDTO.table())
-                .orElseThrow(() -> new RuntimeException("Table not found"));
-
-        Reservation reservation = new Reservation();
-        reservation.setTableId(reservationDTO.table());
-        reservation.setEmployeeId(reservationDTO.employeeId());
-        reservation.setCpf(reservationDTO.cpf());
-        reservation.setName(reservationDTO.customerName());
-        reservation.setPhoneNumber(reservationDTO.phoneNumber());
-        reservation.setReservationDate(reservationDTO.date());
-        reservation.setTime(reservationDTO.time());
-
-        if (table.getAvailability()) {
-
-            reservationRepository.save(reservation);
-
-            Tablee table2 = tableRepository.findById(reservationDTO.table())
+        try {
+            Tablee table = tableRepository.findById(reservationDTO.table())
                     .orElseThrow(() -> new RuntimeException("Table not found"));
-            table2.setAvailability(false);
-            tableRepository.save(table2);
 
-            return ResponseEntity.status(HttpStatus.CREATED).body("Reservation created successfully");
-        }else {
-            return ResponseEntity.status(HttpStatus.CREATED).body("Reservation not created successfully");
+            if (table.getAvailability()) {
+                Reservation reservation = new Reservation();
+                reservation.setTableId(reservationDTO.table());
+                reservation.setEmployeeId(reservationDTO.employeeId());
+                reservation.setCpf(reservationDTO.cpf());
+                reservation.setName(reservationDTO.customerName());
+                reservation.setPhoneNumber(reservationDTO.phoneNumber());
+                reservation.setReservationDate(reservationDTO.date());
+                reservation.setTime(reservationDTO.time());
+
+                reservationRepository.save(reservation);
+
+                table.setAvailability(false);
+                tableRepository.save(table);
+
+                return ResponseEntity.status(HttpStatus.CREATED).body("Reservation created successfully");
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Table is not available");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
         }
     }
 
     @DeleteMapping("/cancellation")
-    public ResponseEntity<String> cancellationReservatipn(@RequestBody DeletReservationDTO deletReservationDTO){
-        Reservation reservation = reservationRepository.findById(deletReservationDTO.id()).orElseThrow(()-> new RuntimeException("Reservation not found"));
-        reservationRepository.delete(reservation);
-        return ResponseEntity.ok().body("Reservation cancelad");
+    public ResponseEntity<String> cancellationReservation(@RequestBody DeletReservationDTO deletReservationDTO){
+        try {
+            Reservation reservation = reservationRepository.findById(deletReservationDTO.id())
+                    .orElseThrow(() -> new RuntimeException("Reservation not found"));
+
+            reservationRepository.delete(reservation);
+
+            // Update table availability after deleting reservation
+            Tablee table = tableRepository.findById(reservation.getTableId())
+                    .orElseThrow(() -> new RuntimeException("Table not found"));
+            table.setAvailability(true);
+            tableRepository.save(table);
+
+            return ResponseEntity.ok().body("Reservation cancelled");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
+        }
     }
 
     @PutMapping("/checkin")
-    public ResponseEntity<String> CheckinReservation(@RequestBody CheckinReservationDTO checkinReservationDTO){
-        int id = checkinReservationDTO.id();
-        Reservation reservation = reservationRepository.findById(checkinReservationDTO.id()).orElseThrow(()-> new RuntimeException("id Reservation not found"));
-        Reservation reservation1 = new Reservation();
-        reservation1.setCheckin(true);
-        reservationRepository.save(reservation);
-        return ResponseEntity.ok().body("Checkin");
+    public ResponseEntity<String> checkinReservation(@RequestBody CheckinReservationDTO checkinReservationDTO){
+        try {
+            Reservation reservation = reservationRepository.findById(checkinReservationDTO.id())
+                    .orElseThrow(() -> new RuntimeException("Reservation not found"));
+
+            reservation.setCheckin(true);
+            reservationRepository.save(reservation);
+
+            return ResponseEntity.ok().body("Checkin successful");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
+        }
+    }
+
+    @PutMapping("/checkout")
+    public ResponseEntity<String> checkoutReservation(@RequestBody CheckoutDTO checkoutDTO){
+        try {
+            Reservation reservation = reservationRepository.findById(checkoutDTO.tableID())
+                    .orElseThrow(() -> new RuntimeException("Reservation not found"));
+
+            reservation.setCheckin(false);
+            reservationRepository.save(reservation);
+
+            // Update table availability after checkout
+            Tablee table = tableRepository.findById(reservation.getTableId())
+                    .orElseThrow(() -> new RuntimeException("Table not found"));
+            table.setAvailability(true);
+            tableRepository.save(table);
+
+            return ResponseEntity.ok().body("Checkout successful");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
+        }
     }
 
     @GetMapping("/reservationList")
     public ResponseEntity<List<Reservation>> reservationList() {
-        List<Reservation> reservations = reservationRepository.findAll();
-        return ResponseEntity.ok(reservations);
+        try {
+            List<Reservation> reservations = reservationRepository.findAll();
+            return ResponseEntity.ok(reservations);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 }
