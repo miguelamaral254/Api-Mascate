@@ -111,7 +111,7 @@ public class ReservationController {
         }
     }
 
-    @GetMapping("/reservationList")
+    @GetMapping("/getReservationList")
     public ResponseEntity<List<Reservation>> reservationList() {
         try {
             List<Reservation> reservations = reservationRepository.findAll();
