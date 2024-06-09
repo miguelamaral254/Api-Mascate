@@ -28,26 +28,17 @@ public class ReservationController {
     @Autowired
     private TableRepository tableRepository;
 
-    @Autowired
-    private EmployeeRepository employeeRepository;
-
-    @Autowired
-    private ClientRepository clientRepository;
 
     @PostMapping("/reservar")
     public ResponseEntity<String> createReservation(@RequestBody ReservationDTO reservationDTO){
 
         Tablee table = tableRepository.findById(reservationDTO.table())
                 .orElseThrow(() -> new RuntimeException("Table not found"));
-        Employee employee = employeeRepository.findById(reservationDTO.employeeId())
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
-        Client client = clientRepository.findByCpf(reservationDTO.cpf())
-                .orElseThrow(() -> new RuntimeException("Client not found"));
 
         Reservation reservation = new Reservation();
-        reservation.setTableId(table);
-        reservation.setEmployeeId(employee);
-        reservation.setCpf(client);
+        reservation.setTableId(reservationDTO.table());
+        reservation.setEmployeeId(reservationDTO.employeeId());
+        reservation.setCpf(reservationDTO.cpf());
         reservation.setName(reservationDTO.customerName());
         reservation.setPhoneNumber(reservationDTO.phoneNumber());
         reservation.setReservationDate(reservationDTO.date());

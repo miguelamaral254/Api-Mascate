@@ -14,17 +14,11 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int idReservation;
 
-    @ManyToOne
-    @JoinColumn(name = "tableID")
-    private Tablee tableId;
+    private int tableId;
 
-    @ManyToOne
-    @JoinColumn(name = "employeeID")
-    private Employee employeeId;
+    private int employeeId;
 
-    @ManyToOne
-    @JoinColumn(name = "clientCPF")
-    private Client cpf;
+    private String cpf;
 
     private String name;
 
@@ -39,7 +33,7 @@ public class Reservation {
 
 
 
-    public Reservation(Tablee tableId, Employee employeeId, Client cpf, String name, String phoneNumber, LocalDate reservationDate, LocalTime time, boolean Checkin) {
+    public Reservation(int tableId, int employeeId, String cpf, String name, String phoneNumber, LocalDate reservationDate, LocalTime time, boolean Checkin) {
         this.tableId = tableId;
         this.employeeId = employeeId;
         this.cpf = cpf;
@@ -69,7 +63,7 @@ public class Reservation {
         this.idReservation = idReservation;
     }
 
-    public Tablee getTableId() {
+    public int getTableId() {
         return tableId;
     }
 
@@ -77,23 +71,23 @@ public class Reservation {
         return name;
     }
 
-    public void setTableId(Tablee tableId) {
+    public void setTableId(int tableId) {
         this.tableId = tableId;
     }
 
-    public Employee getEmployeeId() {
+    public int getEmployeeId() {
         return employeeId;
     }
 
-    public void setEmployeeId(Employee employeeId) {
+    public void setEmployeeId(int employeeId) {
         this.employeeId = employeeId;
     }
 
-    public Client getCpf() {
+    public String getCpf() {
         return cpf;
     }
 
-    public void setCpf(Client cpf) {
+    public void setCpf(String cpf) {
         this.cpf = cpf;
     }
 
