@@ -1,6 +1,5 @@
 package com.Macate.APIRestaurante.repository;
 
-import com.Macate.APIRestaurante.Models.Client;
 import com.Macate.APIRestaurante.Models.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 

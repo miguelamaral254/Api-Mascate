@@ -1,9 +1,8 @@
 package com.Macate.APIRestaurante.Models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import org.hibernate.query.sql.internal.ParameterRecognizerImpl;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -14,47 +13,38 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int idReservation;
 
-    private int tableId;
+    @ManyToOne
+    @JoinColumn(name = "table_id", nullable = false)
+    @JsonManagedReference
+    private Tablee table;
 
-    private int employeeId;
+    @ManyToOne
+    @JoinColumn(name = "employee_id", nullable = false)
+    @JsonManagedReference
+    private Employee employee;
 
-    private String cpf;
-
-    private String name;
-
-    private String phoneNumber;
+    @ManyToOne
+    @JoinColumn(name = "custumer_id", nullable = false)
+    private Customer customer;
 
     @NotNull
     private LocalDate reservationDate;
-
     private LocalTime time;
-
-    private boolean Checkin;
-
-
-
-    public Reservation(int tableId, int employeeId, String cpf, String name, String phoneNumber, LocalDate reservationDate, LocalTime time, boolean Checkin) {
-        this.tableId = tableId;
-        this.employeeId = employeeId;
-        this.cpf = cpf;
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.reservationDate = reservationDate;
-        this.time = time;
-        this.Checkin = Checkin;
-    }
-    public void setTime(LocalTime time) {
-        this.time = time;
-    }
-
-    public LocalTime getTime() {
-        return time;
-    }
-
+    private boolean checkin;
 
     public Reservation() {
     }
 
+    public Reservation(Tablee table, Employee employee, Customer customer, LocalDate reservationDate, LocalTime time, boolean checkin) {
+        this.table = table;
+        this.employee = employee;
+        this.customer = customer;
+        this.reservationDate = reservationDate;
+        this.time = time;
+        this.checkin = checkin;
+    }
+
+    // Getters and Setters
     public int getIdReservation() {
         return idReservation;
     }
@@ -63,40 +53,28 @@ public class Reservation {
         this.idReservation = idReservation;
     }
 
-    public int getTableId() {
-        return tableId;
+    public Tablee getTable() {
+        return table;
     }
 
-    public String getName() {
-        return name;
+    public void setTable(Tablee table) {
+        this.table = table;
     }
 
-    public void setTableId(int tableId) {
-        this.tableId = tableId;
+    public Employee getEmployee() {
+        return employee;
     }
 
-    public int getEmployeeId() {
-        return employeeId;
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
 
-    public void setEmployeeId(int employeeId) {
-        this.employeeId = employeeId;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public LocalDate getReservationDate() {
@@ -107,15 +85,19 @@ public class Reservation {
         this.reservationDate = reservationDate;
     }
 
+    public LocalTime getTime() {
+        return time;
+    }
+
+    public void setTime(LocalTime time) {
+        this.time = time;
+    }
+
     public boolean isCheckin() {
-        return Checkin;
+        return checkin;
     }
 
     public void setCheckin(boolean checkin) {
-        Checkin = checkin;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        this.checkin = checkin;
     }
 }

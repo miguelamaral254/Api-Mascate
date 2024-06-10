@@ -1,9 +1,5 @@
 package com.Macate.APIRestaurante.DTOs;
 
-import com.Macate.APIRestaurante.Models.Client;
-import com.Macate.APIRestaurante.Models.Employee;
-import com.Macate.APIRestaurante.Models.Tablee;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -16,5 +12,17 @@ public record ReservationDTO(
         int employeeId,
         int table
 ) {
-}
 
+    
+    public String customerName() {
+        return customerName;
+    }
+
+    public String cpf() {
+        return cpf;
+    }
+
+    public String phoneNumber() {
+        return phoneNumber;
+    }
+}
