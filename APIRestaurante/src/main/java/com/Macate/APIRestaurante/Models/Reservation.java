@@ -32,19 +32,24 @@ public class Reservation {
     private LocalTime time;
     private boolean checkin;
 
+
     public Reservation() {
     }
 
-    public Reservation(Tablee table, Employee employee, Customer customer, LocalDate reservationDate, LocalTime time, boolean checkin) {
+    public Reservation(int idReservation, Tablee table, Employee employee, Customer customer, LocalDate reservationDate, LocalTime time, boolean checkin) {
         this.table = table;
         this.employee = employee;
         this.customer = customer;
         this.reservationDate = reservationDate;
         this.time = time;
         this.checkin = checkin;
+        this.idReservation = idReservation;
     }
 
     // Getters and Setters
+
+
+
     public int getIdReservation() {
         return idReservation;
     }

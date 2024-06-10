@@ -48,9 +48,16 @@ public class ReservationController {
                 Customer customer = customerRepository.findByCpf(reservationDTO.cpf());
 
                 if (customer == null) {
-                    // Se o cliente não existir, cria um novo
-                    customer = new Customer(reservationDTO.customerName(), reservationDTO.cpf(), reservationDTO.phoneNumber());
+                    customer = new Customer();
+                    customer.setCustomerName(reservationDTO.customerName());
+                    customer.setCpf(reservationDTO.cpf());
+                    customer.setPhoneNumber(reservationDTO.phoneNumber());
+                    customer.setLack(1);
                     customer = customerRepository.save(customer);
+                } else {
+                    // Increment lack for existing customer
+                    customer.setLack(customer.getLack() + 1);
+                    customerRepository.save(customer);
                 }
 
                 Reservation reservation = new Reservation();
@@ -64,6 +71,12 @@ public class ReservationController {
 
                 table.setAvailability(false);
                 tableRepository.save(table);
+
+                Employee employee1 = employeeRepository.findById(reservationDTO.employeeId())
+                        .orElseThrow(() -> new RuntimeException("Table not found"));
+
+                employee.setReservationsMade(employee.getReservationsMade() + 1);
+                employeeRepository.save(employee);
 
                 return ResponseEntity.status(HttpStatus.CREATED).body("Reservation created successfully");
             } else {
