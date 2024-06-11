@@ -65,6 +65,7 @@ public class ReservationController {
                 reservation.setEmployee(employee);
                 reservation.setCustomer(customer);
                 reservation.setReservationDate(reservationDTO.date());
+                reservation.setInLine(false);
                 reservation.setTime(reservationDTO.time());
 
                 reservationRepository.save(reservation);
@@ -80,6 +81,21 @@ public class ReservationController {
 
                 return ResponseEntity.status(HttpStatus.CREATED).body("Reservation created successfully");
             } else {
+                Tablee table2 = tableRepository.findById(reservationDTO.table())
+                        .orElseThrow(() -> new RuntimeException("Table not found"));
+                Employee employee = employeeRepository.findById(reservationDTO.employeeId())
+                        .orElseThrow(() -> new RuntimeException("Employee not found"));
+                Customer customer = customerRepository.findByCpf(reservationDTO.cpf());
+
+                Reservation reservation = new Reservation();
+                reservation.setTable(table2);
+                reservation.setEmployee(employee);
+                reservation.setCustomer(customer);
+                reservation.setReservationDate(reservationDTO.date());
+                reservation.setInLine(true);
+                reservation.setTime(reservationDTO.time());
+
+                reservationRepository.save(reservation);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Table is not available");
             }
         } catch (Exception e) {

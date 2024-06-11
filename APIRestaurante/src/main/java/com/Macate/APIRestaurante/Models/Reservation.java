@@ -32,11 +32,20 @@ public class Reservation {
     private LocalTime time;
     private boolean checkin;
 
+    private boolean inLine;
+
+    public boolean isInLine() {
+        return inLine;
+    }
+
+    public void setInLine(boolean inLine) {
+        this.inLine = inLine;
+    }
 
     public Reservation() {
     }
 
-    public Reservation(int idReservation, Tablee table, Employee employee, Customer customer, LocalDate reservationDate, LocalTime time, boolean checkin) {
+    public Reservation(int idReservation, Tablee table, Employee employee, Customer customer, LocalDate reservationDate, LocalTime time, boolean checkin, boolean inLine) {
         this.table = table;
         this.employee = employee;
         this.customer = customer;
@@ -44,6 +53,7 @@ public class Reservation {
         this.time = time;
         this.checkin = checkin;
         this.idReservation = idReservation;
+        this.inLine = inLine;
     }
 
     // Getters and Setters
