@@ -1,9 +1,6 @@
 package com.Macate.APIRestaurante.Controller;
 
-import com.Macate.APIRestaurante.DTOs.CheckinReservationDTO;
-import com.Macate.APIRestaurante.DTOs.CheckoutDTO;
-import com.Macate.APIRestaurante.DTOs.DeletReservationDTO;
-import com.Macate.APIRestaurante.DTOs.ReservationDTO;
+import com.Macate.APIRestaurante.DTOs.*;
 import com.Macate.APIRestaurante.Models.Customer;
 import com.Macate.APIRestaurante.Models.Employee;
 import com.Macate.APIRestaurante.Models.Reservation;
@@ -167,5 +164,15 @@ public class ReservationController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
+    }
+
+    @PostMapping("/upLine")
+    public ResponseEntity<String> reservationList(@RequestBody UpDTO upDTO) {
+        Reservation reservation = reservationRepository.findById(upDTO.id())
+                .orElseThrow(() -> new RuntimeException("Reservation not found"));
+
+        reservation.setInLine(false);
+        reservationRepository.save(reservation);
+        return ResponseEntity.ok().body("Upe Line");
     }
 }
