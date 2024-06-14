@@ -31,7 +31,6 @@ public class Reservation {
     private LocalDate reservationDate;
     private LocalTime time;
     private boolean checkin;
-
     private boolean inLine;
 
     public boolean isInLine() {
