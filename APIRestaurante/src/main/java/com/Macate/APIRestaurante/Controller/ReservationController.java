@@ -41,25 +41,24 @@ public class ReservationController {
             Tablee table = tableRepository.findById(reservationDTO.table())
                     .orElseThrow(() -> new RuntimeException("Table not found"));
 
+            Employee employee = employeeRepository.findById(reservationDTO.employeeId())
+                    .orElseThrow(() -> new RuntimeException("Employee not found"));
+
+            Customer customer = customerRepository.findByCpf(reservationDTO.cpf());
+            if (customer == null) {
+                customer = new Customer(reservationDTO.customerName(), reservationDTO.cpf(), reservationDTO.phoneNumber());
+                customer = customerRepository.save(customer);
+            }
+
+            Reservation reservation = new Reservation();
+            reservation.setTable(table);
+            reservation.setEmployee(employee);
+            reservation.setCustomer(customer); // Ensure customer is set
+            reservation.setReservationDate(reservationDTO.date());
+            reservation.setTime(reservationDTO.time());
+
             if (table.getAvailability()) {
-                Employee employee = employeeRepository.findById(reservationDTO.employeeId())
-                        .orElseThrow(() -> new RuntimeException("Employee not found"));
-
-                Customer customer = customerRepository.findByCpf(reservationDTO.cpf());
-
-                if (customer == null) {
-                    // Se o cliente não existir, cria um novo
-                    customer = new Customer(reservationDTO.customerName(), reservationDTO.cpf(), reservationDTO.phoneNumber());
-                    customer = customerRepository.save(customer);
-                }
-
-                Reservation reservation = new Reservation();
-                reservation.setTable(table);
-                reservation.setEmployee(employee);
-                reservation.setCustomer(customer);
-                reservation.setReservationDate(reservationDTO.date());
-                reservation.setTime(reservationDTO.time());
-
+                reservation.setInLine(false);
                 reservationRepository.save(reservation);
 
                 table.setAvailability(false);
@@ -67,6 +66,8 @@ public class ReservationController {
 
                 return ResponseEntity.status(HttpStatus.CREATED).body("Reservation created successfully");
             } else {
+                reservation.setInLine(true);
+                reservationRepository.save(reservation);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Table is not available");
             }
         } catch (Exception e) {
