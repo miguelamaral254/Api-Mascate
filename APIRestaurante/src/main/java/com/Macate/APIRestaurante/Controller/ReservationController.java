@@ -1,6 +1,9 @@
 package com.Macate.APIRestaurante.Controller;
 
-import com.Macate.APIRestaurante.DTOs.*;
+import com.Macate.APIRestaurante.DTOs.CheckinReservationDTO;
+import com.Macate.APIRestaurante.DTOs.CheckoutDTO;
+import com.Macate.APIRestaurante.DTOs.DeletReservationDTO;
+import com.Macate.APIRestaurante.DTOs.ReservationDTO;
 import com.Macate.APIRestaurante.Models.Customer;
 import com.Macate.APIRestaurante.Models.Employee;
 import com.Macate.APIRestaurante.Models.Reservation;
@@ -38,26 +41,16 @@ public class ReservationController {
             Tablee table = tableRepository.findById(reservationDTO.table())
                     .orElseThrow(() -> new RuntimeException("Table not found"));
 
-            List<Reservation> existingReservations = reservationRepository.findByTableAndReservationDateAndTime(
-                    table, reservationDTO.date(), reservationDTO.time());
-
-            if (table.getAvailability() && !existingReservations.isEmpty()) {
+            if (table.getAvailability()) {
                 Employee employee = employeeRepository.findById(reservationDTO.employeeId())
                         .orElseThrow(() -> new RuntimeException("Employee not found"));
 
                 Customer customer = customerRepository.findByCpf(reservationDTO.cpf());
 
                 if (customer == null) {
-                    customer = new Customer();
-                    customer.setCustomerName(reservationDTO.customerName());
-                    customer.setCpf(reservationDTO.cpf());
-                    customer.setPhoneNumber(reservationDTO.phoneNumber());
-                    customer.setLack(1);
+                    // Se o cliente não existir, cria um novo
+                    customer = new Customer(reservationDTO.customerName(), reservationDTO.cpf(), reservationDTO.phoneNumber());
                     customer = customerRepository.save(customer);
-                } else {
-                    // Increment lack for existing customer
-                    customer.setLack(customer.getLack() + 1);
-                    customerRepository.save(customer);
                 }
 
                 Reservation reservation = new Reservation();
@@ -65,7 +58,6 @@ public class ReservationController {
                 reservation.setEmployee(employee);
                 reservation.setCustomer(customer);
                 reservation.setReservationDate(reservationDTO.date());
-                reservation.setInLine(false);
                 reservation.setTime(reservationDTO.time());
 
                 reservationRepository.save(reservation);
@@ -73,29 +65,8 @@ public class ReservationController {
                 table.setAvailability(false);
                 tableRepository.save(table);
 
-                Employee employee1 = employeeRepository.findById(reservationDTO.employeeId())
-                        .orElseThrow(() -> new RuntimeException("Table not found"));
-
-                employee.setReservationsMade(employee.getReservationsMade() + 1);
-                employeeRepository.save(employee);
-
                 return ResponseEntity.status(HttpStatus.CREATED).body("Reservation created successfully");
             } else {
-                Tablee table2 = tableRepository.findById(reservationDTO.table())
-                        .orElseThrow(() -> new RuntimeException("Table not found"));
-                Employee employee = employeeRepository.findById(reservationDTO.employeeId())
-                        .orElseThrow(() -> new RuntimeException("Employee not found"));
-                Customer customer = customerRepository.findByCpf(reservationDTO.cpf());
-
-                Reservation reservation = new Reservation();
-                reservation.setTable(table2);
-                reservation.setEmployee(employee);
-                reservation.setCustomer(customer);
-                reservation.setReservationDate(reservationDTO.date());
-                reservation.setInLine(true);
-                reservation.setTime(reservationDTO.time());
-
-                reservationRepository.save(reservation);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Table is not available");
             }
         } catch (Exception e) {
@@ -167,15 +138,5 @@ public class ReservationController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    }
-
-    @PostMapping("/upLine")
-    public ResponseEntity<String> reservationList(@RequestBody UpDTO upDTO) {
-        Reservation reservation = reservationRepository.findById(upDTO.id())
-                .orElseThrow(() -> new RuntimeException("Reservation not found"));
-
-        reservation.setInLine(false);
-        reservationRepository.save(reservation);
-        return ResponseEntity.ok().body("Upe Line");
     }
 }

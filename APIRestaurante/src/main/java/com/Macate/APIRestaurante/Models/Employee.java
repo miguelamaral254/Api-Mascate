@@ -26,15 +26,7 @@ public class Employee {
     @JsonBackReference
     private List<Reservation> reservations;
 
-
-    public Employee() {
-    }
-    public Employee(String name, int reservationsMade, List<Reservation> reservations, int reservationMade) {
-        this.name = name;
-        this.reservationsMade = reservationsMade;
-        this.reservations = reservations;
-    }
-
+    // Getters and Setters
     public int getEmployeeId() {
         return employeeId;
     }
