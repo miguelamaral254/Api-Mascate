@@ -39,7 +39,7 @@ public class ReservationController {
                     .orElseThrow(() -> new RuntimeException("Table not found"));
 
             List<Reservation> existingReservations = reservationRepository.findByTableAndReservationDateAndTime(
-                    reservationDTO.table(), reservationDTO.date(), reservationDTO.time());
+                    table, reservationDTO.date(), reservationDTO.time());
 
             if (table.getAvailability() && !existingReservations.isEmpty()) {
                 Employee employee = employeeRepository.findById(reservationDTO.employeeId())
