@@ -57,7 +57,10 @@ public class ReservationController {
             reservation.setReservationDate(reservationDTO.date());
             reservation.setTime(reservationDTO.time());
 
-            if (table.getAvailability()) {
+            List<Reservation> existingReservations = reservationRepository.findByTableAndReservationDateAndTime(
+                    table, reservationDTO.date(), reservationDTO.time());
+
+            if (table.getAvailability() || existingReservations.isEmpty()) {
                 reservation.setInLine(false);
                 reservationRepository.save(reservation);
 
