@@ -53,7 +53,7 @@ public class ReservationController {
             Reservation reservation = new Reservation();
             reservation.setTable(table);
             reservation.setEmployee(employee);
-            reservation.setCustomer(customer); // Ensure customer is set
+            reservation.setCustomer(customer);
             reservation.setReservationDate(reservationDTO.date());
             reservation.setTime(reservationDTO.time());
 
@@ -77,7 +77,7 @@ public class ReservationController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
         }
     }
-    
+
     @DeleteMapping("/cancellation")
     public ResponseEntity<String> cancellationReservation(@RequestBody DeletReservationDTO deletReservationDTO) {
         try {
@@ -119,7 +119,7 @@ public class ReservationController {
             Reservation reservation = reservationRepository.findById(checkoutDTO.tableID())
                     .orElseThrow(() -> new RuntimeException("Reservation not found"));
 
-            reservation.setCheckin(false);
+            reservation.setCheckout(true);
             reservationRepository.save(reservation);
 
             // Update table availability after checkout

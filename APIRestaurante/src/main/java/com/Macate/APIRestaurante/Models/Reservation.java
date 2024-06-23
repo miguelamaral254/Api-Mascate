@@ -31,6 +31,7 @@ public class Reservation {
     private LocalDate reservationDate;
     private LocalTime time;
     private boolean checkin;
+    private boolean checkout; // aqui
 
     private boolean inLine;
 
@@ -45,13 +46,14 @@ public class Reservation {
     public Reservation() {
     }
 
-    public Reservation(Tablee table, Employee employee, Customer customer, LocalDate reservationDate, LocalTime time, boolean checkin, boolean inLine) {
+    public Reservation(Tablee table, Employee employee, Customer customer, LocalDate reservationDate, LocalTime time, boolean checkin, boolean checkout, boolean inLine) {
         this.table = table;
         this.employee = employee;
         this.customer = customer;
         this.reservationDate = reservationDate;
         this.time = time;
         this.checkin = checkin;
+        this.checkout = checkout; // aqui
         this.inLine = inLine;
     }
 
@@ -110,5 +112,13 @@ public class Reservation {
 
     public void setCheckin(boolean checkin) {
         this.checkin = checkin;
+    }
+
+    public boolean isCheckout() { // aqui
+        return checkout;
+    }
+
+    public void setCheckout(boolean checkout) { // aqui
+        this.checkout = checkout;
     }
 }
